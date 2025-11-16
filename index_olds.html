@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dashboard Gudang & Afdeling — Tema Hijau Agrikultur</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Admin LTE3 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Admin LTE3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <!-- Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar">
+        <div class="d-flex align-items-center mb-3">
+            <div class="me-2">
+                <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center"
+                    style="width:44px;height:44px;font-weight:700;">AG</div>
+            </div>
+            <div>
+                <div style="font-weight:700">Sistem Distribusi</div>
+                <div class="mini">Gudang & Afdeling</div>
+            </div>
+        </div>
+
+        <hr style="border-color: rgba(255,255,255,.08)">
+
+        <nav class="nav flex-column mb-3">
+            <a class="nav-link active" href="#" id="nav-dashboard"><i
+                    class="bi bi-grid-3x3-gap-fill me-2"></i>Dashboard</a>
+            <a class="nav-link" href="#" id="nav-transaksi"><i class="bi bi-journal-plus me-2"></i>Transaksi</a>
+            <a class="nav-link" href="#" id="nav-afdeling"><i class="bi bi-people-fill me-2"></i>Afdeling</a>
+            <a class="nav-link" href="#" id="nav-laporan"><i class="bi bi-file-earmark-text-fill me-2"></i>Laporan</a>
+        </nav>
+
+        <hr style="border-color: rgba(255,255,255,.06)">
+
+        <div class="mb-3">
+            <div class="mini mb-2">Mode Tampilan</div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-sm btn-light flex-fill" id="mode-gudang">Gudang Induk</button>
+                <button class="btn btn-sm btn-outline-light flex-fill" id="mode-afdeling">Afdeling</button>
+            </div>
+            <div class="mini mt-2">Gudang dapat melihat detail Afdeling</div>
+        </div>
+
+        <div class="mt-4 small-muted">Logged as: <strong>Operator</strong></div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content-wrap">
+        <div class="topbar">
+            <div>
+                <h4 class="mb-0" id="page-title">Dashboard Gudang Induk</h4>
+                <div class="small-muted">Pantau penerimaan & penyaluran material</div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end me-3">
+                    <div class="mini">Status</div>
+                    <div><span class="badge badge-accent">Offline (non-realtime)</span></div>
+                </div>
+
+                <div>
+                    <button class="btn btn-outline-success btn-sm" id="btn-refresh"><i
+                            class="bi bi-arrow-clockwise"></i> Muat Ulang</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTERS / ACTIONS -->
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <div class="card card-modern p-3">
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <div class="small-muted">Filter</div>
+                        <input type="date" id="filter-from" class="form-control form-control-sm" style="width:160px">
+                        <input type="date" id="filter-to" class="form-control form-control-sm" style="width:160px">
+                        <select id="filter-afdeling" class="form-select form-select-sm" style="width:200px">
+                            <option value="">Semua Afdeling</option>
+                        </select>
+                        <select id="filter-material" class="form-select form-select-sm" style="width:200px">
+                            <option value="">Semua Material</option>
+                        </select>
+                        <button class="btn btn-success btn-sm" id="apply-filters"><i class="bi bi-funnel"></i>
+                            Terapkan</button>
+                        <button class="btn btn-outline-secondary btn-sm" id="clear-filters">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 text-end">
+                <div class="d-inline-block">
+                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modal-outbound"><i
+                            class="bi bi-arrow-up-right-square"></i> Kirim ke Afdeling</button>
+                    <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-inbound"><i
+                            class="bi bi-arrow-down-left-square"></i> Terima</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUMMARY CARDS -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card card-modern p-3">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="small-muted">Total Masuk (Bulan)</div>
+                            <h5 id="stat-in">0</h5>
+                        </div>
+                        <div class="text-end">
+                            <div class="small-muted">Satuan</div>
+                            <div class="fw-bold">kg</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-modern p-3">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <div class="small-muted">Total Keluar (Bulan)</div>
+                            <h5 id="stat-out">0</h5>
+                        </div>
+                        <div class="text-end">
+                            <div class="small-muted">Top Afdeling</div>
+                            <div id="stat-top-afdeling" class="fw-bold">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-modern p-3">
+                    <div>
+                        <div class="small-muted">Transaksi Hari Ini</div>
+                        <h5 id="stat-today">0</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-modern p-3">
+                    <div>
+                        <div class="small-muted">Material Teratas</div>
+                        <h6 id="stat-top-material">-</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIST AFDELING -->
+        <!-- <h5 class="fw-bold mb-3">📦 Stok Material per Afdeling & Pabrik</h5>
+
+        <div class="row g-3 mb-4 scroll-wrapper">
+
+            <div class="unit-card" data-name="Afdeling 1" onclick="openDetail('Afdeling 1')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Afdeling 1</div>
+                    <h5 class="fw-bold">Total Stok: 820</h5>
+                    <div class="text-muted">Material aktif: 12</div>
+                </div>
+            </div>
+
+            <div class="unit-card" data-name="Afdeling 2" onclick="openDetail('Afdeling 2')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Afdeling 2</div>
+                    <h5 class="fw-bold">Total Stok: 650</h5>
+                    <div class="text-muted">Material aktif: 10</div>
+                </div>
+            </div>
+
+            <div class="unit-card" data-name="Afdeling 3" onclick="openDetail('Afdeling 3')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Afdeling 3</div>
+                    <h5 class="fw-bold">Total Stok: 730</h5>
+                    <div class="text-muted">Material aktif: 9</div>
+                </div>
+            </div>
+
+            <div class="unit-card" data-name="Afdeling 4" onclick="openDetail('Afdeling 4')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Afdeling 4</div>
+                    <h5 class="fw-bold">Total Stok: 540</h5>
+                    <div class="text-muted">Material aktif: 8</div>
+                </div>
+            </div>
+
+            <div class="unit-card" data-name="Afdeling 5" onclick="openDetail('Afdeling 5')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Afdeling 5</div>
+                    <h5 class="fw-bold">Total Stok: 410</h5>
+                    <div class="text-muted">Material aktif: 6</div>
+                </div>
+            </div>
+
+            <div class="unit-card" data-name="Afdeling 6" onclick="openDetail('Afdeling 6')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Afdeling 6</div>
+                    <h5 class="fw-bold">Total Stok: 980</h5>
+                    <div class="text-muted">Material aktif: 14</div>
+                </div>
+            </div>
+
+            <div class="unit-card" data-name="Afdeling 7" onclick="openDetail('Afdeling 7')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Afdeling 7</div>
+                    <h5 class="fw-bold">Total Stok: 605</h5>
+                    <div class="text-muted">Material aktif: 7</div>
+                </div>
+            </div>
+
+            <div class="unit-card" data-name="Afdeling 8" onclick="openDetail('Afdeling 8')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Afdeling 8</div>
+                    <h5 class="fw-bold">Total Stok: 470</h5>
+                    <div class="text-muted">Material aktif: 5</div>
+                </div>
+            </div>
+
+            <div class="unit-card" data-name="Afdeling 9" onclick="openDetail('Afdeling 9')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Afdeling 9</div>
+                    <h5 class="fw-bold">Total Stok: 355</h5>
+                    <div class="text-muted">Material aktif: 4</div>
+                </div>
+            </div>
+
+            <div class="unit-card" data-name="Pabrik 1" onclick="openDetail('Pabrik 1')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Pabrik 1</div>
+                    <h5 class="fw-bold">Total Stok: 1020</h5>
+                    <div class="text-muted">Material aktif: 18</div>
+                </div>
+            </div>
+
+            <div class="unit-card" data-name="Pabrik 2" onclick="openDetail('Pabrik 2')">
+                <div class="card card-modern p-3 shadow-sm">
+                    <div class="small-muted">Pabrik 2</div>
+                    <h5 class="fw-bold">Total Stok: 940</h5>
+                    <div class="text-muted">Material aktif: 14</div>
+                </div>
+            </div>
+
+
+        </div> -->
+
+        <!-- CHARTS + AFDELING CARDS -->
+        <div class="row">
+            <div class="col-lg-7 mb-3">
+                <div class="card card-modern p-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div><strong>Tren Masuk vs Keluar</strong>
+                            <div class="mini">Per bulan (6 bulan terakhir)</div>
+                        </div>
+                        <div class="mini">Satuan: kg</div>
+                    </div>
+                    <canvas id="chart-trend" height="220"></canvas>
+                </div>
+
+                <div class="card card-modern p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div><strong>Distribusi ke Afdeling</strong>
+                            <div class="mini">Penyaluran total per afdeling</div>
+                        </div>
+                        <div class="mini">Total distribusi</div>
+                    </div>
+                    <canvas id="chart-bar" height="200"></canvas>
+                </div>
+            </div>
+
+            <div class="col-lg-5 mb-3">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="card card-modern p-3">
+                            <div class="d-flex justify-content-between">
+                                <div><strong>Top Material (30 hari)</strong></div>
+                                <div class="mini">Terurut</div>
+                            </div>
+                            <ul id="top-material-list" class="list-group list-group-flush mt-2">
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card card-modern p-3">
+                            <div class="d-flex justify-content-between">
+                                <div><strong>Ringkasan Afdeling</strong></div>
+                                <div class="mini">Klik untuk detail</div>
+                            </div>
+                            <div class="mt-2" id="afdeling-cards">
+                                <!-- will be rendered by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRANSAKSI TABLE -->
+        <div class="card card-modern p-3 mt-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div><strong>Riwayat Transaksi</strong></div>
+                <div class="mini">Klik baris untuk lihat detail</div>
+            </div>
+            <div style="overflow:auto; max-height:480px;">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Tanggal</th>
+                            <th>Tipe</th>
+                            <th>Kode</th>
+                            <th>Material</th>
+                            <th>Qty</th>
+                            <th>Afdeling</th>
+                            <th>Kegiatan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tb-transactions">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL: Inbound (Terima) -->
+    <div class="modal fade" id="modal-inbound" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Terima Material ke Gudang Induk</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-inbound">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" class="form-control" name="tanggal" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Kode Material</label>
+                                <input class="form-control" name="kode_material" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Deskripsi Material</label>
+                                <input class="form-control" name="deskripsi" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">QTY</label>
+                                <input type="number" class="form-control" name="qty" min="0" value="0" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Satuan</label>
+                                <input class="form-control" name="satuan" value="kg">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Plant / Storage</label>
+                                <input class="form-control" name="plant">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Catatan</label>
+                                <textarea class="form-control" name="note"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 text-end">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Batal</button>
+                            <button class="btn btn-primary" type="submit">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Outbound (Kirim ke Afdeling) -->
+    <div class="modal fade" id="modal-outbound" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Kirim Material ke Afdeling</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-outbound">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" class="form-control" name="tanggal" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Afdeling Tujuan</label>
+                                <select class="form-select" name="afdeling" required></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Kode Material</label>
+                                <input class="form-control" name="kode_material" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Deskripsi Material</label>
+                                <input class="form-control" name="deskripsi" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">QTY</label>
+                                <input type="number" class="form-control" name="qty" min="0" value="0" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Satuan</label>
+                                <input class="form-control" name="satuan" value="kg">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Penerima</label>
+                                <input class="form-control" name="penerima">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Kegiatan</label>
+                                <select class="form-select" name="item_text" required></select>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 text-end">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Batal</button>
+                            <button class="btn btn-success" type="submit">Kirim</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Afdeling - Catat Pemakaian -->
+    <div class="modal fade" id="modal-pakai" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Catat Pemakaian Afdeling</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-pakai">
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label">Afdeling</label>
+                                <select class="form-select" name="afdeling" required></select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Tanggal Pemakaian</label>
+                                <input type="date" class="form-control" name="tanggal" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Kode Material</label>
+                                <input class="form-control" name="kode_material" required>
+                            </div>
+                            <div class="col-8">
+                                <label class="form-label">QTY Dipakai</label>
+                                <input type="number" class="form-control" name="qty" min="0" required>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label">Satuan</label>
+                                <input class="form-control" name="satuan" value="kg">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Kegiatan</label>
+                                <select class="form-select" name="kegiatan" required></select>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 text-end">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Batal</button>
+                            <button class="btn btn-primary" type="submit">Simpan Pemakaian</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================== MODAL DETAIL AFDELING ======================= -->
+
+    <div class="modal fade" id="modalDetail" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Detail Stok</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <table class="table table-bordered">
+                        <thead class="bg-success text-white">
+                            <tr>
+                                <th>Kode</th>
+                                <th>Material</th>
+                                <th>Stok</th>
+                                <th>Unit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalTableBody">
+                            <!-- Diisi via JS -->
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOTSTRAP JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Get Dummmy Data -->
+    <script src="dummy.js"></script>
+
+    <!-- Style JS -->
+    <script src="style.js"></script>
+</body>
+
+</html>
