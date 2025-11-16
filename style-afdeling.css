@@ -1,0 +1,162 @@
+:root {
+    --sidebar-w: 260px;
+    --accent: #1e8f3e;
+    /* hijau agrikultur */
+    --accent-2: #2fa84a;
+    --muted: #6c757d;
+    --card-radius: 12px;
+    --glass: rgba(255, 255, 255, 0.85);
+}
+
+canvas {
+    height: 350px !important;
+}
+
+
+body {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: #f3faf5;
+}
+
+.app-sidebar {
+    width: var(--sidebar-w);
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, var(--accent), #0f7a32);
+    color: white;
+    padding: 1.25rem;
+    box-shadow: 4px 0 18px rgba(15, 80, 40, .12);
+    overflow: auto;
+}
+
+.app-sidebar .nav-link {
+    color: rgba(255, 255, 255, .95);
+    border-radius: 8px;
+    padding: .6rem .75rem;
+}
+
+.app-sidebar .nav-link.active {
+    background: rgba(255, 255, 255, .08);
+}
+
+.content-wrap {
+    margin-left: var(--sidebar-w);
+    padding: 1.5rem;
+    min-height: 100vh;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-modern {
+    border: 0;
+    border-radius: var(--card-radius);
+    box-shadow: 0 6px 18px rgba(15, 30, 15, 0.06);
+    background: var(--glass);
+}
+
+.small-muted {
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.badge-accent {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    color: #fff;
+}
+
+.table-fixed thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #fff;
+}
+
+.mini {
+    font-size: .85rem;
+    color: var(--muted);
+}
+
+.keluar {
+    color: #c0392b;
+    font-weight: 600;
+}
+
+.masuk {
+    color: #1e8f3e;
+    font-weight: 600;
+}
+
+.scroll-wrapper {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 10px;
+}
+
+.unit-card {
+    display: inline-block;
+    width: 230px;
+    margin-right: 12px;
+    cursor: pointer;
+    vertical-align: top;
+}
+
+.unit-card .card {
+    border-left: 6px solid #2d7a41;
+}
+
+.unit-card:hover {
+    transform: translateY(-3px);
+    transition: 0.2s;
+}
+
+.table thead {
+    background: linear-gradient(90deg, #1e8f3e, #2fa84a);
+    color: #fff;
+}
+
+.card-modern {
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(15, 30, 15, 0.06);
+    background: white;
+    padding: 16px;
+}
+
+.small-muted {
+    color: #6c757d;
+    font-size: .9rem;
+}
+.table-modern thead {
+    background: #1e7e34;
+    color: white;
+}
+
+.table-modern tbody tr:hover {
+    background: #f6fff4;
+}
+
+.export-btn {
+    margin-right: 10px;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+    .app-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        box-shadow: none;
+    }
+
+    .content-wrap {
+        margin-left: 0;
+    }
+}
+

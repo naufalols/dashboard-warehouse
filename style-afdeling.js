@@ -105,11 +105,10 @@ function renderTable(filter = {}) {
         tr.innerHTML = `
           <td>${t.id}</td>
           <td>${t.date}</td>
-          <td class="${t.type === 'IN' ? 'masuk' : (t.type === 'OUT' ? 'keluar' : '')}">${t.type}</td>
+          <td class="${t.type === 'IN' ? 'masuk' : ''}">${t.type}</td>
           <td>${t.kode}</td>
           <td>${t.desc}</td>
           <td>${t.qty}</td>
-          <td>${t.afdeling || '-'}</td>
           <td>${t.item_text || '-'}</td>
         `;
         tr.style.cursor = 'pointer';
@@ -170,7 +169,7 @@ function initCharts() {
                     backgroundColor: 'rgba(30,143,62,0.08)'
                 },
                 {
-                    label: 'Keluar',
+                    label: 'Penggunaan',
                     data: [],
                     tension: 0.25,
                     borderWidth: 2,
@@ -191,34 +190,34 @@ function initCharts() {
         }
     });
 
-    const ctx2 = document.getElementById('chart-bar').getContext('2d');
-    chartBar = new Chart(ctx2, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: [{
-                label: 'Total Keluar',
-                data: [],
-                borderRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            }
-        }
-    });
+    // const ctx2 = document.getElementById('chart-bar').getContext('2d');
+    // chartBar = new Chart(ctx2, {
+    //     type: 'bar',
+    //     data: {
+    //         labels: [],
+    //         datasets: [{
+    //             label: 'Total Keluar',
+    //             data: [],
+    //             borderRadius: 6
+    //         }]
+    //     },
+    //     options: {
+    //         responsive: true,
+    //         maintainAspectRatio: false,
+    //         plugins: {
+    //             legend: {
+    //                 display: false
+    //             }
+    //         }
+    //     }
+    // });
 }
 
 function updateCharts() {
     // trend: last 6 months
     const last6 = getLastNMonths(6);
     const masuk = last6.map(m => sumByMonthAndType(m, 'IN'));
-    const keluar = last6.map(m => sumByMonthAndType(m, 'OUT'));
+    const keluar = last6.map(m => sumByMonthAndType(m, 'USE'));
     chartTrend.data.labels = last6;
     chartTrend.data.datasets[0].data = masuk;
     chartTrend.data.datasets[1].data = keluar;
@@ -227,7 +226,7 @@ function updateCharts() {
     // bar per afdeling (OUT totals)
     const distro = {};
     masterAfdelings.forEach(a => distro[a.code] = 0);
-    transactions.filter(t => t.type === 'OUT').forEach(t => {
+    transactions.filter(t => t.type === 'USE').forEach(t => {
         if (t.afdeling) distro[t.afdeling] = (distro[t.afdeling] || 0) + t.qty;
     });
     chartBar.data.labels = masterAfdelings.map(a => a.name);
@@ -241,30 +240,30 @@ function updateCharts() {
 function updateStats() {
     const monthStart = (new Date()).toISOString().slice(0, 7);
     const statIn = transactions.filter(t => t.type === 'IN' && t.date.slice(0, 7) === monthStart).reduce((s, x) => s + x.qty, 0);
-    const statOut = transactions.filter(t => t.type === 'OUT' && t.date.slice(0, 7) === monthStart).reduce((s, x) => s + x.qty, 0);
+    const statOut = transactions.filter(t => t.type === 'USE' && t.date.slice(0, 7) === monthStart).reduce((s, x) => s + x.qty, 0);
     const today = (new Date()).toISOString().slice(0, 10);
     const statToday = transactions.filter(t => t.date === today).length;
 
     document.getElementById('stat-in').innerText = statIn;
-    document.getElementById('stat-out').innerText = statOut;
+    document.getElementById('stat-use').innerText = statOut;
     document.getElementById('stat-today').innerText = statToday;
 
     // top afdeling
     const byAf = {};
-    transactions.filter(t => t.type === 'OUT').forEach(t => byAf[t.afdeling] = (byAf[t.afdeling] || 0) + t.qty);
+    transactions.filter(t => t.type === 'USE').forEach(t => byAf[t.afdeling] = (byAf[t.afdeling] || 0) + t.qty);
     const topAf = Object.entries(byAf).sort((a, b) => b[1] - a[1])[0];
     document.getElementById('stat-top-afdeling').innerText = topAf ? masterAfdelings.find(x => x.code === topAf[0]) ? name || topAf[0] : '-' : '-';
 
     // top material name
     const byMat = {};
-    transactions.filter(t => t.type === 'OUT').forEach(t => byMat[t.desc] = (byMat[t.desc] || 0) + t.qty);
+    transactions.filter(t => t.type === 'USE').forEach(t => byMat[t.desc] = (byMat[t.desc] || 0) + t.qty);
     const topMat = Object.entries(byMat).sort((a, b) => b[1] - a[1])[0];
     document.getElementById('stat-top-material').innerText = topMat ? topMat[0] : '-';
 
     // top materials list (30 hari)
     const cutoff = dateNDaysAgo(30);
     const byMat30 = {};
-    transactions.filter(t => t.date >= cutoff && t.type === 'OUT').forEach(t => {
+    transactions.filter(t => t.date >= cutoff && t.type === 'USE').forEach(t => {
         byMat30[t.desc] = (byMat30[t.desc] || 0) + t.qty;
     });
     const sorted = Object.entries(byMat30).sort((a, b) => b[1] - a[1]).slice(0, 6);
@@ -284,7 +283,7 @@ function updateStats() {
 function renderAfdelingCards() {
     $afdelingCards.innerHTML = '';
     masterAfdelings.forEach(a => {
-        const received = transactions.filter(t => t.type === 'OUT' && t.afdeling === a.code).reduce((s, x) => s + x.qty, 0);
+        const received = transactions.filter(t => t.type === 'USE' && t.afdeling === a.code).reduce((s, x) => s + x.qty, 0);
         const used = transactions.filter(t => t.type === 'USE' && t.afdeling === a.code).reduce((s, x) => s + x.qty, 0);
         const stok = received - used;
         const last = transactions.filter(t => t.afdeling === a.code).sort((b, c) => c.id - b.id)[0];
@@ -302,6 +301,7 @@ function renderAfdelingCards() {
               <div style="font-weight:700">${stok}</div>
               <div class="mini mt-1">Last: ${lastDate}</div>
               <div class="mt-2">
+                <button class="btn btn-sm btn-outline-success me-1" onclick="openPakaiModal('${a.code}')">Catat Pakai</button>
                 <button class="btn btn-sm btn-success" onclick="showAfdelingDetail('${a.code}')">Detail</button>
               </div>
             </div>
@@ -406,7 +406,7 @@ document.getElementById('form-outbound').addEventListener('submit', (e) => {
     transactions.push({
         id: nextId++,
         date: fd.tanggal,
-        type: 'OUT',
+        type: 'USE',
         kode: fd.kode_material,
         desc: fd.deskripsi,
         qty: Number(fd.qty),
