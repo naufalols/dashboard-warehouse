@@ -46,82 +46,102 @@
         <div id="navbar"></div>
 
         <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper" style="min-height: 603px;">
-            <!-- Content Header (Page header) -->
+        <div class="content-wrapper">
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
                             <h1 class="m-0">Catat Pemakaian Material Afdeling</h1>
-                        </div><!-- /.col -->
+                        </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                                 <li class="breadcrumb-item active">Use Material</li>
                             </ol>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
-            </div>
-
-            <div class="container-fluid">
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        Catat Pemakaian Material Afdeling
-                    </div>
-
-                    <div class="card-body">
-
-                        <form id="useMaterialForm" class="row g-2" role="form" method="post" action="#"></form>
-                        <div class="col-md-6">
-                            <label class="form-label">Tanggal</label>
-                            <input type="date" class="form-control" name="tanggal" required>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Kode Material</label>
-                            <input class="form-control" name="kode_material" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Deskripsi Material</label>
-                            <input class="form-control" name="deskripsi" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">QTY</label>
-                            <input type="number" class="form-control" name="qty" min="0" value="0" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Satuan</label>
-                            <input class="form-control" name="satuan" value="kg" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Plant / Storage</label>
-                            <input class="form-control" name="plant" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Catatan</label>
-                            <textarea class="form-control" name="note" rows="3"></textarea>
-                        </div>
-
-                        <!-- Optional extra fields -->
-
-                        <div class="col-md-6">
-                            <label class="form-label">Pengguna / PIC</label>
-                            <input class="form-control" name="pic" placeholder="Nama pengguna">
-                        </div>
-
-                        <div class="col-12 d-flex justify-content-end gap-2 mt-2">
-                            <button type="reset" class="btn btn-secondary">Reset</button>
-                            <button type="submit" class="btn btn-success">Simpan Pemakaian</button>
-                        </div>
-                        </form>
-
                     </div>
                 </div>
             </div>
-
-
+        
+            <div class="container-fluid">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        Form Pemakaian Material Afdeling
+                    </div>
+        
+                    <div class="card-body">
+        
+                        <form id="useMaterialForm" class="row g-3" method="post" action="#">
+        
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Tanggal Pemakaian</label>
+                                <input type="date" class="form-control" name="tanggal" required>
+                            </div>
+        
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Kode Material</label>
+                                <input class="form-control" name="kode_material" required>
+                            </div>
+        
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Deskripsi Material</label>
+                                <input class="form-control" name="deskripsi" required>
+                            </div>
+        
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">QTY Pemakaian</label>
+                                <input type="number" class="form-control" name="qty" min="1" required>
+                            </div>
+        
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Satuan</label>
+                                <input class="form-control" name="satuan" value="kg" required>
+                            </div>
+        
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Plant</label>
+                                <input class="form-control" name="plant" value="5K16" readonly>
+                            </div>
+        
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Storage</label>
+                                <input class="form-control" name="storage" value="4003" readonly>
+                            </div>
+        
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Cost Centre</label>
+                                <input class="form-control" name="cost_centre" placeholder="Masukkan cost centre" required>
+                            </div>
+        
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Penerima Barang</label>
+                                <input class="form-control" name="penerima" placeholder="Nama penerima barang" required>
+                            </div>
+        
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Tujuan Penggunaan</label>
+                                <input class="form-control" name="tujuan" placeholder="Contoh: Pemeliharaan Kebun" required>
+                            </div>
+        
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Catatan Tambahan</label>
+                                <textarea class="form-control" name="note" rows="3"></textarea>
+                            </div>
+        
+                            <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+                                <button type="reset" class="btn btn-secondary px-4">Reset</button>
+                                <button type="submit" class="btn btn-success px-4">Simpan Pemakaian</button>
+                            </div>
+        
+                        </form>
+        
+                    </div>
+                </div>
+            </div>
+        
             <div id="sidebar-overlay"></div>
         </div>
+
 
 
 

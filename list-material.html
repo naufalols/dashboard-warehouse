@@ -80,7 +80,7 @@
                 <div class="section">
                     <div class="card-modern">
                         <h5>1. Stok Per Produk di Gudang Induk</h5>
-                        <p class="small-muted mb-2">Ringkasan total IN, OUT/USE, dan sisa stok (urut sisa desc).</p>
+                        <p class="small-muted mb-2">Ringkasan total IN, OUT, dan sisa stok (urut sisa desc).</p>
 
                         <table id="stockTable" class="table table-bordered table-striped" style="width:100%">
                             <thead>
@@ -89,7 +89,7 @@
                                     <th>Material</th>
                                     <th>Cost Centre</th>
                                     <th>Total IN</th>
-                                    <th>Total OUT/USE</th>
+                                    <th>Total OUT</th>
                                     <th>Sisa Stok</th>
                                 </tr>
                             </thead>
@@ -102,7 +102,7 @@
                 <div class="section">
                     <div class="card-modern">
                         <h5>2. Riwayat Transaksi</h5>
-                        <p class="small-muted mb-2">Semua transaksi (IN / OUT / USE). Klik export di pojok tabel untuk
+                        <p class="small-muted mb-2">Semua transaksi (IN / OUT). Klik export di pojok tabel untuk
                             simpan.</p>
 
                         <table id="transTable" class="table table-hover table-bordered" style="width:100%">
@@ -115,7 +115,7 @@
                                     <th>Material</th>
                                     <th>Qty</th>
                                     <th>Afdeling</th>
-                                    <th>Cost Centre</th>
+                                    <!-- <th>Cost Centre</th> -->
                                     <th>Penerima</th>
                                     <th>Kegiatan / Item Text</th>
                                 </tr>
@@ -146,7 +146,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
         <!-- Get Dummmy Data -->
-        <script src="dummy.js"></script>
+        <!-- <script src="dummy.js"></script> -->
 
         <!-- Style JS -->
         <!-- <script src="style.js"></script> -->
@@ -207,7 +207,7 @@
                     const material = materials[Math.floor(Math.random() * materials.length)];
                     // prefer IN a bit more to avoid running out often
                     const rand = Math.random();
-                    let type = rand < 0.45 ? 'IN' : (rand < 0.85 ? 'OUT' : 'USE');
+                    let type = rand < 0.45 ? 'IN' : 'OUT';
 
                     // generate qty reasonable relative to current stock
                     let maxQty = Math.max(20, Math.min(400, Math.floor(stock[material.kode] * 0.6) || 120));
@@ -284,7 +284,7 @@
                     desc: t.desc,
                     qty: t.qty,
                     afdeling: t.afdeling || '-',
-                    cost_centre: costCentreFromKode(t.kode),
+                    // cost_centre: costCentreFromKode(t.kode),
                     penerima: t.penerima || '-',
                     item_text: t.item_text || '-'
                 })).sort((a, b) => {
@@ -336,7 +336,7 @@
                         { data: 'desc' },
                         { data: 'qty' },
                         { data: 'afdeling' },
-                        { data: 'cost_centre' },
+                        // { data: 'cost_centre' },
                         { data: 'penerima' },
                         { data: 'item_text' }
                     ],

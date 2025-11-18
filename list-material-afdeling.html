@@ -32,40 +32,67 @@
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     <!-- Style -->
     <link rel="stylesheet" href="style-afdeling.css">
+    <style>
+        body {
+            background: #f4fff4;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto;
+        }
+    
+        .card-modern {
+            padding: 16px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 6px 18px rgba(15, 30, 15, 0.04);
+        }
+    
+        .small-muted {
+            color: #6c757d;
+            font-size: .9rem;
+        }
+    
+        .section {
+            margin-bottom: 22px;
+        }
+    
+        .table thead {
+            background: linear-gradient(90deg, #1e8f3e, #2fa84a);
+            color: #fff;
+        }
+    </style>
 </head>
 
 <body>
     <div class="wrapper">
 
-        <!-- Preloader -->
+        <!-- Preloader (kept as in original) -->
         <div class="preloader flex-column justify-content-center align-items-center" style="height: 0px;">
             <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60"
                 style="display: none;">
         </div>
 
+        <!-- Navbar placeholder -->
         <div id="navbar"></div>
 
-        <!-- Content Wrapper. Contains page content -->
+        <!-- Content Wrapper -->
         <div class="content-wrapper" style="min-height: 603px;">
-            <!-- Content Header (Page header) -->
+            <!-- Content Header -->
             <div class="content-header">
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
                             <h1 class="m-0">Materials</h1>
-                        </div><!-- /.col -->
+                        </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                                 <li class="breadcrumb-item active">List Material</li>
                             </ol>
-                        </div><!-- /.col -->
-                    </div><!-- /.row -->
-                </div><!-- /.container-fluid -->
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="container-fluid">
-
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h3 class="mb-0">📦 Stok Material & Riwayat Transaksi</h3>
@@ -126,268 +153,268 @@
                 </div>
 
             </div>
+
             <div id="sidebar-overlay"></div>
         </div>
+    </div>
 
+    <!-- SCRIPTS -->
+    <!-- jQuery (required by DataTables) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- BOOTSTRAP JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- DataTables + Buttons -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
-        <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
-        <!-- Get Dummmy Data -->
-        <script src="dummy-afdeling.js"></script>
+    <!-- Load navbar (ke file navbar-afdeling.html jika ada) -->
+    <script>
+        fetch('navbar-afdeling.html')
+            .then(res => res.text())
+            .then(html => document.getElementById('navbar').innerHTML = html)
+            .catch(() => {/* ignore */ });
+    </script>
 
-        <!-- Style JS -->
-        <!-- <script src="style.js"></script> -->
-        <!-- Load navbar -->
-        <script>
-            fetch('navbar-afdeling.html')
-                .then(res => res.text())
-                .then(html => document.getElementById('navbar').innerHTML = html);
-        </script>
-        <!-- LOAD DATA -->
-        <!-- <script src="transactions.js"></script> -->
+    <!-- PAGE SCRIPT: data + datatables -->
+    <script>
+        function generateDummyTransactions(count = 400) {
+            const materials = [
+                { kode: '40006686', desc: 'AMONIA LIQUIDA 20%', item_text: 'Pemupukan' },
+                { kode: '40005992', desc: 'TALCUM POWDER', item_text: 'Perawatan TBM' },
+                { kode: '40001234', desc: 'UREA PRILL', item_text: 'Pemupukan' },
+                { kode: '40007890', desc: 'KAPUR DOLOMIT', item_text: 'Perawatan Tanah' },
+                { kode: '40004567', desc: 'HERBISIDA GRAMOXONE', item_text: 'Pengendalian Gulma' }
+            ];
 
-        <script>
-            function generateDummyTransactions(count = 400) {
-                const materials = [
-                    { kode: '40006686', desc: 'AMONIA LIQUIDA 20%', item_text: 'Pemupukan' },
-                    { kode: '40005992', desc: 'TALCUM POWDER', item_text: 'Perawatan TBM' },
-                    { kode: '40001234', desc: 'UREA PRILL', item_text: 'Pemupukan' },
-                    { kode: '40007890', desc: 'KAPUR DOLOMIT', item_text: 'Perawatan Tanah' },
-                    { kode: '40004567', desc: 'HERBISIDA GRAMOXONE', item_text: 'Pengendalian Gulma' }
-                ];
+            const afdelingList = ['F.11.0001.K.25'];
 
-                const afdelingList = [
-                    'F.11.0001.K.25', 
-                ];
+            const penerimaList = ['Cucun Sugiarto', 'Darmolo', 'Operator A', 'Operator B', 'Operator C', 'Mandor A', 'Mandor B'];
+            const picGudang = 'Petugas Afdeling';
 
-                const penerimaList = ['Cucun Sugiarto', 'Darmolo', 'Operator A', 'Operator B', 'Operator C', 'Mandor A', 'Mandor B'];
-                const picGudang = 'Petugas Afdeling';
+            // stok per material (safeguard)
+            const stock = {};
+            materials.forEach(m => stock[m.kode] = 0);
 
-                // stok per material (safeguard)
-                const stock = {};
-                materials.forEach(m => stock[m.kode] = 0);
+            const transactions = [];
 
-                const transactions = [];
-
-                // make sure there are some initial IN transactions to provide stock
-                let id = 1;
-                materials.forEach(m => {
-                    const initQty = Math.floor(Math.random() * 500) + 200; // initial stock per material
-                    const date = `2025-01-${String(Math.ceil(Math.random() * 28)).padStart(2, '0')}`;
-                    transactions.push({
-                        id: id++,
-                        date,
-                        type: 'IN',
-                        kode: m.kode,
-                        desc: m.desc,
-                        qty: initQty,
-                        afdeling: '',
-                        penerima: picGudang,
-                        item_text: 'Initial Stock'
-                    });
-                    stock[m.kode] += initQty;
+            // ensure there are some initial IN transactions to provide stock
+            let id = 1;
+            materials.forEach(m => {
+                const initQty = Math.floor(Math.random() * 500) + 200; // initial stock per material
+                const date = `2025-01-${String(Math.ceil(Math.random() * 28)).padStart(2, '0')}`;
+                transactions.push({
+                    id: id++,
+                    date,
+                    type: 'IN',
+                    kode: m.kode,
+                    desc: m.desc,
+                    qty: initQty,
+                    afdeling: '',
+                    penerima: picGudang,
+                    item_text: 'Initial Stock'
                 });
-
-                for (let i = 0; i < count; i++) {
-                    const material = materials[Math.floor(Math.random() * materials.length)];
-                    // prefer IN a bit more to avoid running out often
-                    const rand = Math.random();
-                    let type = rand < 0.45 ? 'IN' : 'USE';
-
-                    // generate qty reasonable relative to current stock
-                    let maxQty = Math.max(20, Math.min(400, Math.floor(stock[material.kode] * 0.6) || 120));
-                    // ensure some IN possible even if maxQty small
-                    if (type !== 'IN' && stock[material.kode] < 20) {
-                        type = 'IN';
-                    }
-
-                    let qty;
-                    if (type === 'IN') {
-                        qty = Math.floor(Math.random() * 400) + 10; // incoming batch
-                    } else {
-                        // outgoing / use should not exceed current stock
-                        qty = Math.min(stock[material.kode], Math.floor(Math.random() * (maxQty - 10 + 1)) + 10);
-                        if (qty <= 0) { type = 'IN'; qty = Math.floor(Math.random() * 300) + 10; }
-                    }
-
-                    const date = `2025-${String(Math.ceil(Math.random() * 12)).padStart(2, '0')}-${String(Math.ceil(Math.random() * 28)).padStart(2, '0')}`;
-                    const afdeling = (type === 'IN') ? '' : afdelingList[Math.floor(Math.random() * afdelingList.length)];
-                    const penerima = (type === 'IN') ? picGudang : penerimaList[Math.floor(Math.random() * penerimaList.length)];
-
-                    // update stock safely
-                    if (type === 'IN') stock[material.kode] += qty;
-                    else stock[material.kode] -= qty;
-
-                    transactions.push({
-                        id: id++,
-                        date,
-                        type,
-                        kode: material.kode,
-                        desc: material.desc,
-                        qty,
-                        afdeling,
-                        penerima,
-                        item_text: (type === 'IN') ? 'Penerimaan' : material.item_text
-                    });
-                }
-
-                return transactions;
-            }
-
-            /**********************
-             Utility: cost centre
-            ***********************/
-            function costCentreFromKode(kode) {
-                return 'CC-' + kode.slice(-3); // simple example
-            }
-
-            /**********************
-             Render / Data logic
-            ***********************/
-            let transactions = generateDummyTransactions(500);
-
-            // build stock summary per material
-            function buildMaterialSummary(transactions) {
-                const map = {}; // kode -> {kode, desc, in, out, sisa}
-                transactions.forEach(t => {
-                    if (!map[t.kode]) map[t.kode] = { kode: t.kode, desc: t.desc, in: 0, out: 0, sisa: 0 };
-                    if (t.type === 'IN') map[t.kode].in += t.qty;
-                    else map[t.kode].out += t.qty;
-                    map[t.kode].sisa = map[t.kode].in - map[t.kode].out;
-                });
-                // convert to array and sort by sisa desc
-                return Object.values(map).sort((a, b) => b.sisa - a.sisa);
-            }
-
-            // prepare rows for transactions table (add cost centre)
-            function prepareTransactionsRows(transactions) {
-                return transactions.map(t => ({
-                    id: t.id,
-                    date: t.date,
-                    type: t.type,
-                    kode: t.kode,
-                    desc: t.desc,
-                    qty: t.qty,
-                    afdeling: t.afdeling || '-',
-                    cost_centre: costCentreFromKode(t.kode),
-                    penerima: t.penerima || '-',
-                    item_text: t.item_text || '-'
-                })).sort((a, b) => {
-                    // sort by date desc then id desc
-                    if (a.date === b.date) return b.id - a.id;
-                    return b.date.localeCompare(a.date);
-                });
-            }
-
-            // initialize DataTables
-            let stockTable, transTable;
-            function initTables() {
-                const stockData = buildMaterialSummary(transactions);
-                const transData = prepareTransactionsRows(transactions);
-
-                // destroy if exists
-                if ($.fn.DataTable.isDataTable('#stockTable')) $('#stockTable').DataTable().destroy();
-                if ($.fn.DataTable.isDataTable('#transTable')) $('#transTable').DataTable().destroy();
-
-                // Stock table
-                stockTable = $('#stockTable').DataTable({
-                    data: stockData,
-                    columns: [
-                        { data: 'kode' },
-                        { data: 'desc' },
-                        { data: null, render: d => costCentreFromKode(d.kode) },
-                        { data: 'in' },
-                        { data: 'out' },
-                        { data: 'sisa', render: d => `<strong>${d}</strong>` }
-                    ],
-                    order: [[5, 'desc']],
-                    dom: 'Bfrtip',
-                    buttons: [
-                        { extend: 'excel', text: 'Export Excel' },
-                        { extend: 'print', text: 'Print' }
-                    ],
-                    pageLength: 10,
-                    responsive: true
-                });
-
-                // Transactions table
-                transTable = $('#transTable').DataTable({
-                    data: transData,
-                    columns: [
-                        { data: 'id' },
-                        { data: 'date' },
-                        { data: 'type' },
-                        { data: 'kode' },
-                        { data: 'desc' },
-                        { data: 'qty' },
-                        { data: 'afdeling' },
-                        { data: 'cost_centre' },
-                        { data: 'penerima' },
-                        { data: 'item_text' }
-                    ],
-                    order: [[1, 'desc'], [0, 'desc']],
-                    dom: 'Bfrtip',
-                    buttons: [
-                        { extend: 'excel', text: 'Export Excel' },
-                        { extend: 'print', text: 'Print' }
-                    ],
-                    pageLength: 15,
-                    responsive: true
-                });
-            }
-
-            // initial
-            $(document).ready(function () {
-                initTables();
-
-                // reload button re-generate data and redraw
-                $('#reloadBtn').on('click', function () {
-                    transactions = generateDummyTransactions(500);
-                    initTables();
-                });
-
-                // simple row click: show modal detail of material (optional)
-                $('#stockTable tbody').on('click', 'tr', function () {
-                    const data = stockTable.row(this).data();
-                    if (!data) return;
-                    // build modal content with list of materials and their per-afdeling stocks
-                    showMaterialDetailModal(data.kode, data.desc);
-                });
+                stock[m.kode] += initQty;
             });
 
-            /**********************
-             Modal builder for material detail
-            ***********************/
-            function showMaterialDetailModal(kode, desc) {
-                // compute per-afdeling received/out/use for this kode
-                const perAfd = {};
-                transactions.forEach(t => {
-                    if (t.kode !== kode) return;
-                    const afd = t.afdeling || 'Gudang Induk';
-                    if (!perAfd[afd]) perAfd[afd] = { in: 0, out: 0 };
-                    if (t.type === 'IN') perAfd[afd].in += t.qty;
-                    else perAfd[afd].out += t.qty;
+            for (let i = 0; i < count; i++) {
+                const material = materials[Math.floor(Math.random() * materials.length)];
+                // prefer IN a bit more to avoid running out often
+                const rand = Math.random();
+                let type = rand < 0.45 ? 'IN' : 'USE';
+
+                // generate qty reasonable relative to current stock
+                let maxQty = Math.max(20, Math.min(400, Math.floor(stock[material.kode] * 0.6) || 120));
+                // ensure some IN possible even if maxQty small
+                if (type !== 'IN' && stock[material.kode] < 20) {
+                    type = 'IN';
+                }
+
+                let qty;
+                if (type === 'IN') {
+                    qty = Math.floor(Math.random() * 400) + 10; // incoming batch
+                } else {
+                    // outgoing / use should not exceed current stock
+                    qty = Math.min(stock[material.kode], Math.floor(Math.random() * (maxQty - 10 + 1)) + 10);
+                    if (qty <= 0) { type = 'IN'; qty = Math.floor(Math.random() * 300) + 10; }
+                }
+
+                const date = `2025-${String(Math.ceil(Math.random() * 12)).padStart(2, '0')}-${String(Math.ceil(Math.random() * 28)).padStart(2, '0')}`;
+                const afdeling = (type === 'IN') ? '' : afdelingList[Math.floor(Math.random() * afdelingList.length)];
+                const penerima = (type === 'IN') ? picGudang : penerimaList[Math.floor(Math.random() * penerimaList.length)];
+
+                // update stock safely
+                if (type === 'IN') stock[material.kode] += qty;
+                else stock[material.kode] -= qty;
+
+                transactions.push({
+                    id: id++,
+                    date,
+                    type,
+                    kode: material.kode,
+                    desc: material.desc,
+                    qty,
+                    afdeling,
+                    penerima,
+                    item_text: (type === 'IN') ? 'Penerimaan' : material.item_text
                 });
+            }
 
-                let rows = Object.entries(perAfd).map(([afd, val]) =>
-                    `<tr><td>${afd}</td><td>${val.in}</td><td>${val.out}</td><td>${val.in - val.out}</td></tr>`
-                ).join('');
+            return transactions;
+        }
 
-                // create modal element
-                const modalHtml = `
+        /**********************
+         Utility: cost centre
+        ***********************/
+        function costCentreFromKode(kode) {
+            return 'CC-' + kode.slice(-3); // simple example
+        }
+
+        /**********************
+         Render / Data logic
+        ***********************/
+        let transactions = generateDummyTransactions(500);
+
+        // build stock summary per material
+        function buildMaterialSummary(transactions) {
+            const map = {}; // kode -> {kode, desc, in, out, sisa}
+            transactions.forEach(t => {
+                if (!map[t.kode]) map[t.kode] = { kode: t.kode, desc: t.desc, in: 0, out: 0, sisa: 0 };
+                if (t.type === 'IN') map[t.kode].in += t.qty;
+                else map[t.kode].out += t.qty;
+                map[t.kode].sisa = map[t.kode].in - map[t.kode].out;
+            });
+            // convert to array and sort by sisa desc
+            return Object.values(map).sort((a, b) => b.sisa - a.sisa);
+        }
+
+        // prepare rows for transactions table (add cost centre)
+        function prepareTransactionsRows(transactions) {
+            return transactions.map(t => ({
+                id: t.id,
+                date: t.date,
+                type: t.type,
+                kode: t.kode,
+                desc: t.desc,
+                qty: t.qty,
+                afdeling: t.afdeling || '-',
+                // <-- cost centre only for OUT or USE (IN => '-')
+                cost_centre: (t.type === 'OUT' || t.type === 'USE') ? costCentreFromKode(t.kode) : '-',
+                penerima: t.penerima || '-',
+                item_text: t.item_text || '-'
+            })).sort((a, b) => {
+                // sort by date desc then id desc
+                if (a.date === b.date) return b.id - a.id;
+                return b.date.localeCompare(a.date);
+            });
+        }
+
+        // initialize DataTables
+        let stockTable, transTable;
+        function initTables() {
+            const stockData = buildMaterialSummary(transactions);
+            const transData = prepareTransactionsRows(transactions);
+
+            // destroy if exists
+            if ($.fn.DataTable.isDataTable('#stockTable')) $('#stockTable').DataTable().destroy();
+            if ($.fn.DataTable.isDataTable('#transTable')) $('#transTable').DataTable().destroy();
+
+            // Stock table
+            stockTable = $('#stockTable').DataTable({
+                data: stockData,
+                columns: [
+                    { data: 'kode' },
+                    { data: 'desc' },
+                    { data: null, render: d => '-' }, // cost centre per-material not relevant, show '-'
+                    { data: 'in' },
+                    { data: 'out' },
+                    { data: 'sisa', render: d => `<strong>${d}</strong>` }
+                ],
+                order: [[5, 'desc']],
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'excel', text: 'Export Excel' },
+                    { extend: 'print', text: 'Print' }
+                ],
+                pageLength: 10,
+                responsive: true
+            });
+
+            // Transactions table
+            transTable = $('#transTable').DataTable({
+                data: transData,
+                columns: [
+                    { data: 'id' },
+                    { data: 'date' },
+                    { data: 'type' },
+                    { data: 'kode' },
+                    { data: 'desc' },
+                    { data: 'qty' },
+                    { data: 'afdeling' },
+                    { data: 'cost_centre' },
+                    { data: 'penerima' },
+                    { data: 'item_text' }
+                ],
+                order: [[1, 'desc'], [0, 'desc']],
+                dom: 'Bfrtip',
+                buttons: [
+                    { extend: 'excel', text: 'Export Excel' },
+                    { extend: 'print', text: 'Print' }
+                ],
+                pageLength: 15,
+                responsive: true
+            });
+        }
+
+        // initial
+        $(document).ready(function () {
+            initTables();
+
+            // reload button re-generate data and redraw
+            $('#reloadBtn').on('click', function () {
+                transactions = generateDummyTransactions(500);
+                initTables();
+            });
+
+            // simple row click: show modal detail of material (optional)
+            $('#stockTable tbody').on('click', 'tr', function () {
+                const data = stockTable.row(this).data();
+                if (!data) return;
+                // build modal content with list of materials and their per-afdeling stocks
+                showMaterialDetailModal(data.kode, data.desc);
+            });
+        });
+
+        /**********************
+         Modal builder for material detail
+        ***********************/
+        function showMaterialDetailModal(kode, desc) {
+            // compute per-afdeling received/out/use for this kode
+            const perAfd = {};
+            transactions.forEach(t => {
+                if (t.kode !== kode) return;
+                const afd = t.afdeling || 'Gudang Induk';
+                if (!perAfd[afd]) perAfd[afd] = { in: 0, out: 0 };
+                if (t.type === 'IN') perAfd[afd].in += t.qty;
+                else perAfd[afd].out += t.qty;
+            });
+
+            let rows = Object.entries(perAfd).map(([afd, val]) =>
+                `<tr><td>${afd}</td><td>${val.in}</td><td>${val.out}</td><td>${val.in - val.out}</td></tr>`
+            ).join('');
+
+            // create modal element
+            const modalHtml = `
       <div class="modal fade show" tabindex="-1" style="display:block;background:rgba(0,0,0,0.3)">
         <div class="modal-dialog modal-lg modal-dialog-centered">
           <div class="modal-content">
@@ -411,23 +438,22 @@
         </div>
       </div>
     `;
-                const el = document.createElement('div');
-                el.innerHTML = modalHtml;
-                document.body.appendChild(el);
+            const el = document.createElement('div');
+            el.innerHTML = modalHtml;
+            document.body.appendChild(el);
 
-                // populate detailTx with transactions for this kode
-                const list = transactions.filter(t => t.kode === kode)
-                    .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id)
-                    .map(t => `<div style="padding:6px;border-bottom:1px solid #eee">
+            // populate detailTx with transactions for this kode
+            const list = transactions.filter(t => t.kode === kode)
+                .sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id)
+                .map(t => `<div style="padding:6px;border-bottom:1px solid #eee">
         <strong>${t.date}</strong> — ${t.type} — ${t.qty} — ${t.afdeling || 'Gudang Induk'} — ${t.penerima || '-'} — ${t.item_text}
       </div>`).join('');
-                el.querySelector('#detailTx').innerHTML = list;
+            el.querySelector('#detailTx').innerHTML = list;
 
-                // attach close handlers
-                el.querySelectorAll('.close-modal').forEach(b => b.addEventListener('click', () => el.remove()));
-            }
-
-        </script>
+            // attach close handlers
+            el.querySelectorAll('.close-modal').forEach(b => b.addEventListener('click', () => el.remove()));
+        }
+    </script>
 </body>
 
 </html>
