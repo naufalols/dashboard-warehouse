@@ -87,7 +87,7 @@
                                 <tr>
                                     <th>Kode</th>
                                     <th>Material</th>
-                                    <th>Cost Centre</th>
+                                    <!-- <th>Cost Centre</th> -->
                                     <th>Total IN</th>
                                     <th>Total OUT</th>
                                     <th>Sisa Stok</th>
@@ -310,12 +310,12 @@
                     columns: [
                         { data: 'kode' },
                         { data: 'desc' },
-                        { data: null, render: d => costCentreFromKode(d.kode) },
+                        // { data: null, render: d => costCentreFromKode(d.kode) },
                         { data: 'in' },
                         { data: 'out' },
                         { data: 'sisa', render: d => `<strong>${d}</strong>` }
                     ],
-                    order: [[5, 'desc']],
+                    order: [[4, 'desc']],
                     dom: 'Bfrtip',
                     buttons: [
                         { extend: 'excel', text: 'Export Excel' },
